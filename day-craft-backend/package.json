@@ -13,7 +13,8 @@
     "studio": "drizzle-kit studio",
     "lint": "eslint src/**/*.ts --fix",
     "test": "jest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "vercel-build": "echo 'vercel-build' && node -r esbuild-register src/lib/db/migrate.ts"
   },
   "keywords": [],
   "author": "Arnav Sharma",
