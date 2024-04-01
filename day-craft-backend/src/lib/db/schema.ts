@@ -2,6 +2,7 @@ import { serial, pgTable, text, timestamp, varchar, pgEnum, uniqueIndex } from '
 
 //Enums
 export const genderEnum = pgEnum('gender', ['male', 'female', 'other']);
+export const userTokenTypeEnum = pgEnum('user_token_type', ['reset', 'verify']);
 
 // Schema
 export const users = pgTable(
@@ -18,8 +19,8 @@ export const users = pgTable(
     gender: genderEnum('gender'),
     location: text('location'),
     bio: text('bio'),
-    access_token: varchar('access_token', { length: 255 }),
-    refresh_token: varchar('refresh_token', { length: 255 }),
+    access_token: text('access_token'),
+    refresh_token: text('refresh_token'),
     verified_at: timestamp('verified_at', { mode: 'date' }),
     deleted_at: timestamp('deleted_at', { mode: 'date' }),
     created_at: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
@@ -34,3 +35,15 @@ export const users = pgTable(
     };
   },
 );
+
+export const userTokens = pgTable('user_tokens', {
+  id: serial('id').notNull().primaryKey(),
+  user_id: serial('user_id')
+    .notNull()
+    .references(() => users.id),
+  token: varchar('token', { length: 6 }).notNull(),
+  token_type: userTokenTypeEnum('user_token_type'),
+  expires_at: timestamp('expires_at', { mode: 'date' }).notNull().defaultNow(),
+  created_at: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+  updated_at: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow(),
+});

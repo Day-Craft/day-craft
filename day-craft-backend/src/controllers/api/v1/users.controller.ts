@@ -1,7 +1,7 @@
 import { COOKIE_OPTIONS } from '../../../constants';
 import generateResponse from '../../../interfaces/MessageResponse';
 import { asyncWrapper } from '../../../lib/asyncWrapper';
-import { clearUserTokens, createUser, fetchUserToken, fetchUserViaCondition, verifyUserPassword } from '../../../models/users.model';
+import { clearUserTokens, fetchUserViaCondition, verifyPasswordResetCode } from '../../../models/users.model';
 
 export const getUserInfo = asyncWrapper(async (req, res) => {
   const username = req.params.username.toString();
@@ -10,36 +10,6 @@ export const getUserInfo = asyncWrapper(async (req, res) => {
   if (!user) throw new Error(`User with username ${username} not found!`);
 
   res.status(200).json(generateResponse(true, 'User data fetched successfully!', user));
-});
-
-export const registerUser = asyncWrapper(async (req, res) => {
-  const { display_name, email, password } = req.body;
-
-  if (!display_name || !email || !password) throw new Error('Please provide all required fields!');
-
-  const existingUser = await fetchUserViaCondition(email, 'email');
-
-  if (existingUser) throw new Error('User with that email already exists!');
-
-  const newUser = await createUser(display_name, email, password);
-
-  res.status(200).json(generateResponse(true, 'User data created successfully!', newUser));
-});
-
-export const loginUser = asyncWrapper(async (req, res) => {
-  const { uuid, password } = req.body;
-
-  if (uuid || !password) throw new Error('Please provide all required fields!');
-
-  await verifyUserPassword(uuid, 'uuid', password);
-
-  const { access_token, refresh_token, userData } = await fetchUserToken(uuid, 'uuid');
-
-  res
-    .status(200)
-    .cookie('accessToken', access_token, COOKIE_OPTIONS)
-    .cookie('refreshToken', refresh_token, COOKIE_OPTIONS)
-    .json(generateResponse(true, 'User logged in successfully!', userData));
 });
 
 export const logoutUser = asyncWrapper(async (req, res) => {
@@ -78,10 +48,14 @@ export const updateUserPassword = asyncWrapper(async (req, res) => {
 //   //TODO: Implement this
 // });
 
-// export const resendVeificationMail = asyncWrapper(async (req, res) => {
-//   //TODO: Implement this
-// });
+export const verifyUserToken = asyncWrapper(async (req, res) => {
+  const { uuid, reset_code } = req.body;
 
-// export const resetPassword = asyncWrapper(async (req, res) => {
-//   //TODO: Implement this
-// });
+  if (uuid) throw new Error('Please provide all required fields!');
+
+  const userData = await fetchUserViaCondition(uuid, 'uuid');
+
+  await verifyPasswordResetCode(userData.id, reset_code, 'reset');
+
+  res.status(200);
+});
