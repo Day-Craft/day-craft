@@ -5,7 +5,7 @@ import corsMiddleware from 'cors';
 import cookieParserMiddleware from 'cookie-parser';
 
 import { handleError, handleNotFound } from './lib/middlewares';
-import MessageResponseInterface from './interfaces/MessageResponse';
+import generateResponse from './interfaces/MessageResponse';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -19,22 +19,12 @@ expressApp.use(cookieParserMiddleware());
 
 // Define root route
 expressApp.get('/', (req, res) => {
-  const apiResponse: MessageResponseInterface = {
-    success: true,
-    message: 'Hello Day Craft!',
-    error: undefined,
-  };
-  res.status(200).json(apiResponse);
+  res.status(200).json(generateResponse(true, 'Hello Day Craft!', null, undefined));
 });
 
 // Define health check route
 expressApp.get('/health', (req, res) => {
-  const apiResponse: MessageResponseInterface = {
-    success: true,
-    message: 'Server is running!',
-    error: undefined,
-  };
-  res.status(200).json(apiResponse);
+  res.status(200).json(generateResponse(true, 'Server is running!', null, undefined));
 });
 
 // Importing API routes

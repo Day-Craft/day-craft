@@ -8,15 +8,16 @@ export function handleNotFound(req: Request, res: Response, next: NextFunction) 
   next(error);
 }
 
-export function handleError(err: Error, req: Request, res: Response<ErrorResponseInterface>) {
+export function handleError(err: Error, req: Request, res: Response<ErrorResponseInterface>, next: NextFunction, message?: string) {
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
   res.status(statusCode);
   res.json({
     success: false,
-    message: statusCode === 404 ? NOT_FOUND_MESSAGE : GENERIC_ERROR_MESSAGE,
+    message: message ? message : statusCode === 404 ? NOT_FOUND_MESSAGE : GENERIC_ERROR_MESSAGE,
     error: err.message,
     stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
   });
+  next();
 }
 
 export default { handleNotFound, handleError };
