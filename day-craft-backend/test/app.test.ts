@@ -7,10 +7,7 @@ describe('GET /', () => {
       .get('/')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200, {
-        success: true,
-        message: 'Hello Day Craft!',
-      }, done);
+      .expect(200, { success: true, message: 'Hello Day Craft!', data: null }, done);
   });
 });
 
@@ -20,9 +17,6 @@ describe('GET /', () => {
       .get('/health')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200, {
-        success: true,
-        message: 'Server is running!',
-      }, done);
+      .expect(200, { success: true, message: 'Server is running!', data: null }, done);
   });
 });
