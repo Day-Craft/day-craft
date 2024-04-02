@@ -15,12 +15,12 @@ expressApp.use(express.json());
 expressApp.use(cookieParserMiddleware());
 
 // Define root route
-expressApp.get('/', (req, res) => {
+expressApp.get('/', (_req, res) => {
   res.status(200).json(generateResponse(true, 'Hello Day Craft!', null, undefined));
 });
 
 // Define health check route
-expressApp.get('/health', (req, res) => {
+expressApp.get('/health', (_req, res) => {
   res.status(200).json(generateResponse(true, 'Server is running!', null, undefined));
 });
 

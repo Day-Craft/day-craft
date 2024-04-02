@@ -8,7 +8,7 @@ export function handleNotFound(req: Request, res: Response, next: NextFunction) 
   next(error);
 }
 
-export function handleError(err: Error, req: Request, res: Response<ErrorResponseInterface>, next: NextFunction, message?: string) {
+export function handleError(err: Error, _req: Request, res: Response<ErrorResponseInterface>, next: NextFunction, message?: string) {
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
   res.status(statusCode);
   res.json({
