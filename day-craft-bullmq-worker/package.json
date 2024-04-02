@@ -1,0 +1,18 @@
+{
+  "name": "day-craft-bullmq-worker",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "ts-node ./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "bullmq": "^5.5.0",
+    "ioredis": "^5.3.2"
+  }
+}
