@@ -1,5 +1,0 @@
-{
-    "eslint.workingDirectories": [
-        { "directory": "./day-craft-backend", "changeProcessCWD": true }
-      ]
-}
