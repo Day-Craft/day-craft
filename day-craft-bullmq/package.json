@@ -1,0 +1,22 @@
+{
+  "name": "day-craft-bullmq",
+  "description": "Day Craft BullMQ",
+  "author": "Arnav Sharma",
+  "bin": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node './dist/index.js'",
+    "dev": "tsc-watch --onSuccess \"node ./dist/index.js\""
+  },
+  "dependencies": {
+    "bullmq": "^5.5.0",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.3.2",
+    "nodemailer": "^6.9.13"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.2",
+    "tsc-watch": "^6.2.0",
+    "typescript": "^5.4.3"
+  }
+}
