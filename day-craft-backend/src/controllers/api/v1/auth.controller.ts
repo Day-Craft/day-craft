@@ -10,30 +10,32 @@ import {
   validateUserAndPassword,
 } from '../../../models/users.model';
 import { wrapAsync } from '../../../lib/wrapAsync';
+import { authenticateUserSchema, registerNewUserSchema, resetUserPasswordSchema } from '../../../schemas/auth.schema';
 
+// POST /api/v1/auth/register
 export const registerNewUser = wrapAsync(async (req, res) => {
-  const { displayName, userEmail, userPassword } = req.body;
-  if (!displayName || !userEmail || !userPassword) throw new Error('Please provide all required fields!');
+  const { display_name, email, password } = registerNewUserSchema.parse(req.body);
 
-  const userExists = await findUserByCondition(userEmail, 'email');
+  const userExists = await findUserByCondition(email, 'email');
+  console.log(userExists);
   if (userExists) throw new Error('User with that email already exists!');
+  const createdUser = await createNewUser(display_name, email, password);
 
-  const createdUser = await createNewUser(displayName, userEmail, userPassword);
-
+  // add token
   res.status(200).json(generateResponseMessage(true, 'User data created successfully!', createdUser));
 });
 
+// POST /api/v1/auth/login
 export const authenticateUser = wrapAsync(async (req, res) => {
-  const { userUuid, userPassword } = req.body;
-  if (!userUuid || !userPassword) throw new Error('Please provide all required fields!');
+  const { uuid, password } = authenticateUserSchema.parse(req.body);
 
-  await validateUserAndPassword(userUuid, 'uuid', userPassword);
+  await validateUserAndPassword(uuid, 'uuid', password);
 
-  let { userAccessToken, userRefreshToken, userDetails } = await retrieveUserToken(userUuid, 'uuid');
+  let { userAccessToken, userRefreshToken, userDetails } = await retrieveUserToken(uuid, 'uuid');
   if (!userAccessToken || !userRefreshToken) {
-    ({ userAccessToken, userRefreshToken, userDetails } = await renewUserToken(userUuid, 'uuid'));
+    ({ userAccessToken, userRefreshToken, userDetails } = await renewUserToken(uuid, 'uuid'));
   }
-  console.log(userAccessToken);
+
   res
     .status(200)
     .cookie('accessToken', userAccessToken, COOKIE_SETTINGS)
@@ -41,10 +43,9 @@ export const authenticateUser = wrapAsync(async (req, res) => {
     .json(generateResponseMessage(true, 'User logged in successfully!', userDetails));
 });
 
+// POST /api/v1/auth/reset-password
 export const resetUserPassword = wrapAsync(async (req, res) => {
-  const { userUuid } = req.body;
-
-  if (!userUuid) throw new Error('Please provide all required fields!');
+  const { userUuid } = resetUserPasswordSchema.parse(req.body);
 
   const userDetails = await findUserByCondition(userUuid, 'uuid');
 

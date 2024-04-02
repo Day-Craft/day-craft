@@ -1,15 +1,23 @@
 import { handleError } from './middlewares';
 import { NextFunction, Request, Response } from 'express';
+import { ZodError } from 'zod';
 
 // eslint-disable-next-line no-unused-vars
-type ControllerFunction = (req: Request, res: Response, next: NextFunction) => Promise<void>;
+type ControllerFunction = (req: UserRequest, res: Response, next: NextFunction) => Promise<void>;
+interface UserRequest extends Request {
+  user?: any;
+}
 
 export const wrapAsync = (fn: ControllerFunction): ControllerFunction => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: UserRequest, res: Response, next: NextFunction) => {
     try {
       await fn(req, res, next);
     } catch (error: Error | any) {
-      handleError(error, req, res, next, 'Internal Server Error');
+      if (error instanceof ZodError) {
+        handleError(error, req, res, next, 'Internal Server Error');
+      } else {
+        handleError(error, req, res, next);
+      }
     }
   };
 };

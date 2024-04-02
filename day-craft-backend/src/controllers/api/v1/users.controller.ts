@@ -1,6 +1,6 @@
 import generateResponse from '../../../interfaces/MessageResponse';
 import { COOKIE_SETTINGS } from '../../../constants';
-import { clearUserTokens, findUserByCondition, verifyPasswordResetCode } from '../../../models/users.model';
+import { findUserByCondition, verifyPasswordResetCode } from '../../../models/users.model';
 import { wrapAsync } from '../../../lib/wrapAsync';
 
 export const getUserInfo = wrapAsync(async (req, res) => {
@@ -11,22 +11,16 @@ export const getUserInfo = wrapAsync(async (req, res) => {
 
   res.status(200).json(generateResponse(true, 'User data fetched successfully!', user));
 });
-
+// /api/v1/users/:username
 export const logoutUser = wrapAsync(async (req, res) => {
-  const username = req.params.username.toString();
-
-  if (!username) throw new Error('Please provide a username!');
-
-  await clearUserTokens(username, 'username');
-
+  // await clearUserTokens(req.user.user, 'username');
+  console.log(req.user);
   res
     .status(200)
     .clearCookie('accessToken', COOKIE_SETTINGS)
     .clearCookie('refreshToken', COOKIE_SETTINGS)
     .json(generateResponse(true, 'User logged out successfully!', undefined));
 });
-
-//TODO: Reset Password, Update User Profile, Delete User, Resend Verification Email
 
 export const updateUserPassword = wrapAsync(async (req, res) => {
   const { uuid, current_password, updated_password } = req.body;
