@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
 import ErrorResponseInterface from '../interfaces/ErrorResponse';
 import { GENERIC_ERROR_MESSAGE, NOT_FOUND_MESSAGE, APPLICATION_ENVIRONMENT } from '../constants';
+import { NextFunction, Request, Response } from 'express';
 
 export function handleNotFound(req: Request, res: Response, next: NextFunction) {
   res.status(404);

@@ -1,7 +1,7 @@
 import * as databaseSchema from './schema';
+import { DATABASE_URL } from '../../constants';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import { DATABASE_URL } from '../../constants';
 
 if (!DATABASE_URL) throw new Error('Cannot migrate. DATABASE_URL is not set');
 

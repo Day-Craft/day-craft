@@ -5,9 +5,11 @@ dotenv.config();
 export const APPLICATION_ENVIRONMENT = process.env.APPLICATION_ENVIRONMENT || 'development';
 export const PORT = process.env.PORT;
 
-// Application configuration
+// Messages configuration
 export const NOT_FOUND_MESSAGE = 'The requested resource cannot be found.';
 export const GENERIC_ERROR_MESSAGE = 'Something went wrong, please try again later. If the problem persists, contact support.';
+
+// Security configuration
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'internal-token';
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'internal-token';
 export const COOKIE_SETTINGS = { httpOnly: true, secure: true };

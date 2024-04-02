@@ -1,6 +1,6 @@
 import express from 'express';
-import userRoutes from './v1/users.route';
 import authRouter from './v1/auth.route';
+import userRoutes from './v1/users.route';
 
 const authenticationMiddleware = (req: any, res: any, next: () => void) => {
   console.log('authenticationMiddleware was executed!');

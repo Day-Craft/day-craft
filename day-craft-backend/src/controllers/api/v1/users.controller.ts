@@ -1,7 +1,7 @@
-import { COOKIE_SETTINGS } from '../../../constants';
 import generateResponse from '../../../interfaces/MessageResponse';
-import { wrapAsync } from '../../../lib/wrapAsync';
+import { COOKIE_SETTINGS } from '../../../constants';
 import { clearUserTokens, findUserByCondition, verifyPasswordResetCode } from '../../../models/users.model';
+import { wrapAsync } from '../../../lib/wrapAsync';
 
 export const getUserInfo = wrapAsync(async (req, res) => {
   const username = req.params.username.toString();

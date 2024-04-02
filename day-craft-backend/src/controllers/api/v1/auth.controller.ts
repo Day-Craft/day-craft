@@ -1,5 +1,6 @@
 import generateResponseMessage from '../../../interfaces/MessageResponse';
-import { wrapAsync } from '../../../lib/wrapAsync';
+import { COOKIE_SETTINGS } from '../../../constants';
+import { dispatchPasswordResetEmail } from '../../../lib/mailers';
 import {
   createNewUser,
   retrieveUserToken,
@@ -8,8 +9,7 @@ import {
   renewUserToken,
   validateUserAndPassword,
 } from '../../../models/users.model';
-import { COOKIE_SETTINGS } from '../../../constants';
-import { dispatchPasswordResetEmail } from '../../../lib/mailers';
+import { wrapAsync } from '../../../lib/wrapAsync';
 
 export const registerNewUser = wrapAsync(async (req, res) => {
   const { displayName, userEmail, userPassword } = req.body;

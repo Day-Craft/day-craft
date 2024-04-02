@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
-import databaseInstance from '../lib/db';
 import crypto from 'crypto';
-import { and, desc, eq, or } from 'drizzle-orm';
-import { users as User, userTokens as UserToken, userTokenTypeEnum } from '../lib/db/schema';
+import databaseInstance from '../lib/db';
 import jwt from 'jsonwebtoken';
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../constants';
+import { and, desc, eq, or } from 'drizzle-orm';
+import { users as User, userTokens as UserToken, userTokenTypeEnum } from '../lib/db/schema';
 
 const generateUsername = (name: string) => `${name.toLowerCase().replace(/\s/g, '_')}_${crypto.randomBytes(3).toString('hex')}`;
 
