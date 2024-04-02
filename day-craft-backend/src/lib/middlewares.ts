@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import ErrorResponseInterface from '../interfaces/ErrorResponse';
-import { GENERIC_ERROR_MESSAGE, NOT_FOUND_MESSAGE } from '../constants';
+import { GENERIC_ERROR_MESSAGE, NOT_FOUND_MESSAGE, APPLICATION_ENVIRONMENT } from '../constants';
 
 export function handleNotFound(req: Request, res: Response, next: NextFunction) {
   res.status(404);
@@ -15,7 +15,7 @@ export function handleError(err: Error, req: Request, res: Response<ErrorRespons
     success: false,
     message: message ? message : statusCode === 404 ? NOT_FOUND_MESSAGE : GENERIC_ERROR_MESSAGE,
     error: err.message,
-    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
+    stack: APPLICATION_ENVIRONMENT ? undefined : err.stack,
   });
   next();
 }

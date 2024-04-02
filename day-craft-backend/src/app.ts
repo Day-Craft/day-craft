@@ -7,9 +7,6 @@ import cookieParserMiddleware from 'cookie-parser';
 import { handleError, handleNotFound } from './lib/middlewares';
 import generateResponse from './interfaces/MessageResponse';
 
-import dotenv from 'dotenv';
-dotenv.config();
-
 const expressApp = express();
 expressApp.use(morganLogger('dev'));
 expressApp.use(helmetSecurity());
