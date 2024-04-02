@@ -15,3 +15,6 @@ export const COOKIE_SETTINGS = { httpOnly: true, secure: true };
 // External services configuration
 export const DATABASE_URL = process.env.DATABASE_URL || undefined;
 export const REDIS_URL = process.env.REDIS_URL || '';
+
+// BullMQ queues
+export const EMAIL_TASK_QUEUE = process.env.EMAIL_TASK_QUEUE || 'email-task-queue';
