@@ -15,7 +15,7 @@ export const sendVerificationEmail = async (to: string, verification_code: strin
   await sendEmail(to, subject, body);
 };
 
-export const sendPasswordResetEmail = async (to: string, reset_code: string) => {
+export const dispatchPasswordResetEmail = async (to: string, reset_code: string) => {
   const subject = 'Reset your password';
   const body = `Your password reset code is: ${reset_code}`;
   await sendEmail(to, subject, body);

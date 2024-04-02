@@ -8,7 +8,7 @@ import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../constants';
 
 const generateUsername = (name: string) => `${name.toLowerCase().replace(/\s/g, '_')}_${crypto.randomBytes(3).toString('hex')}`;
 
-export const createUser = async (display_name: string, email: string, password: string) => {
+export const createNewUser = async (display_name: string, email: string, password: string) => {
   const values = {
     display_name: display_name,
     username: generateUsername(display_name),
@@ -34,7 +34,7 @@ export const createUser = async (display_name: string, email: string, password: 
   return newUser[0];
 };
 
-export const fetchUserViaCondition = async (uuid: string, find_by: string) => {
+export const findUserByCondition = async (uuid: string, find_by: string) => {
   let where_condition;
   if (find_by === 'email') {
     where_condition = eq(User.username, uuid);
@@ -46,48 +46,48 @@ export const fetchUserViaCondition = async (uuid: string, find_by: string) => {
     where_condition = or(eq(User.username, uuid), eq(User.email, uuid));
   } else throw new Error('Invalid find_by parameter!');
 
-  const userData = await databaseInstance.select().from(User).where(where_condition).limit(1);
-  if (!userData) throw new Error(`Invalid Credentials!`);
-  return userData[0];
+  const userDetails = await databaseInstance.select().from(User).where(where_condition).limit(1);
+  if (!userDetails) throw new Error(`Invalid Credentials!`);
+  return userDetails[0];
 };
 
-export const verifyUserAndPassword = async (uuid: string, login_via: string, password: string) => {
-  const userData = await fetchUserViaCondition(uuid, login_via);
-  const encrypted_password = userData.encrypted_password;
-  if (!userData || !encrypted_password || !bcrypt.compareSync(password, encrypted_password)) throw new Error('Invalid Credentials!');
+export const validateUserAndPassword = async (uuid: string, login_via: string, password: string) => {
+  const userDetails = await findUserByCondition(uuid, login_via);
+  const encrypted_password = userDetails.encrypted_password;
+  if (!userDetails || !encrypted_password || !bcrypt.compareSync(password, encrypted_password)) throw new Error('Invalid Credentials!');
   return true;
 };
 
-export const fetchUserToken = async (uuid: string, login_via: string) => {
-  const userData = await fetchUserViaCondition(uuid, login_via);
-  return { access_token: userData.access_token, refresh_token: userData.refresh_token, userData };
+export const retrieveUserToken = async (uuid: string, login_via: string) => {
+  const userDetails = await findUserByCondition(uuid, login_via);
+  return { userAccessToken: userDetails.access_token, userRefreshToken: userDetails.refresh_token, userDetails };
 };
 
-export const refreshUserToken = async (uuid: string, login_via: string) => {
-  const userData = await fetchUserViaCondition(uuid, login_via);
+export const renewUserToken = async (uuid: string, login_via: string) => {
+  const userDetails = await findUserByCondition(uuid, login_via);
 
-  const access_token = jwt.sign(userData, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-  const refresh_token = jwt.sign(userData, REFRESH_TOKEN_SECRET, { expiresIn: '6h' });
+  const access_token = jwt.sign(userDetails, ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+  const refresh_token = jwt.sign(userDetails, REFRESH_TOKEN_SECRET, { expiresIn: '6h' });
 
-  await databaseInstance.update(User).set({ access_token: access_token, refresh_token: refresh_token }).where(eq(User.id, userData.id));
-  return { access_token: access_token, refresh_token: refresh_token, userData };
+  await databaseInstance.update(User).set({ access_token: access_token, refresh_token: refresh_token }).where(eq(User.id, userDetails.id));
+  return { userAccessToken: access_token, userRefreshToken: refresh_token, userDetails };
 };
 
 export const clearUserTokens = async (uuid: string, login_via: string) => {
-  const userData = await fetchUserViaCondition(uuid, login_via);
-  await databaseInstance.update(User).set({ access_token: null, refresh_token: null }).where(eq(User.id, userData.id));
+  const userDetails = await findUserByCondition(uuid, login_via);
+  await databaseInstance.update(User).set({ access_token: null, refresh_token: null }).where(eq(User.id, userDetails.id));
 };
 
 export const updateUserPassword = async (uuid: string, current_password: string, updated_password: string) => {
-  const userData = await verifyUserAndPassword(uuid, 'email', current_password);
-  if (!userData) throw new Error('Invalid Credentials!');
+  const userDetails = await validateUserAndPassword(uuid, 'email', current_password);
+  if (!userDetails) throw new Error('Invalid Credentials!');
   await databaseInstance
     .update(User)
     .set({ encrypted_password: bcrypt.hashSync(updated_password, 10), access_token: null, refresh_token: null })
     .where(eq(User.email, uuid));
 };
 
-export const generatePasswordResetCode = async (user_id: number) => {
+export const createPasswordResetCode = async (user_id: number) => {
   const reset_token = crypto.randomBytes(3).toString('hex');
   const values = {
     user_id: user_id,
