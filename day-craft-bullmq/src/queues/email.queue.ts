@@ -1,6 +1,7 @@
-import { Worker } from "bullmq";
-import { EMAIL_TASK_QUEUE, REDIS_SERVER_CONFIG, WORKER_RATE_LIMITER } from "../constants";
+import { EMAIL_TASK_QUEUE } from "../constants";
 import sendEmail from "../consumers/email.consumer";
+import connection from "../redis";
+import { Worker } from "bullmq";
 
 const emailQueueWorker = new Worker(EMAIL_TASK_QUEUE, async (job) => {
     console.log(`Processing job ${job.id} of type ${job.name}`);
@@ -14,8 +15,11 @@ const emailQueueWorker = new Worker(EMAIL_TASK_QUEUE, async (job) => {
     )
 },
 {
-    connection: REDIS_SERVER_CONFIG,
-    limiter: WORKER_RATE_LIMITER,
+    connection,
+    limiter: {
+        max: 5,
+        duration: 1000
+    },
 });
 
 export default emailQueueWorker;
