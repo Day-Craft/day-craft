@@ -1,11 +1,12 @@
+import * as databaseSchema from './schema';
+import { DATABASE_URL } from '../../constants';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import * as databaseSchema from './schema';
 
-if (!process.env.DATABASE_URL) throw new Error('Cannot migrate. DATABASE_URL is not set');
+if (!DATABASE_URL) throw new Error('Cannot migrate. DATABASE_URL is not set');
 
 const databasePool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: DATABASE_URL,
 });
 
 databasePool
