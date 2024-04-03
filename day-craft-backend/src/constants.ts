@@ -12,6 +12,7 @@ export const GENERIC_ERROR_MESSAGE = 'Something went wrong, please try again lat
 // Security configuration
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || 'internal-token';
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'internal-token';
+export const RESET_TOKEN_SECRET = process.env.RESET_TOKEN_SECRET || 'internal-token';
 export const COOKIE_SETTINGS = { httpOnly: true, secure: true };
 
 // External services configuration

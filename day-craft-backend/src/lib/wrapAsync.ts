@@ -1,6 +1,8 @@
 import { handleError } from './middlewares';
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
+import jwt from 'jsonwebtoken';
+import { COOKIE_SETTINGS } from '../constants';
 
 interface UserRequest extends Request {
   user?: any;
@@ -16,6 +18,9 @@ export const wrapAsync = (fn: ControllerFunction): ControllerFunction => {
     } catch (error: Error | any) {
       if (error instanceof ZodError) {
         handleError(error, req, res, next, 'Internal Server Error');
+      } else if (error instanceof jwt.TokenExpiredError) {
+        res.status(401).clearCookie('accessToken', COOKIE_SETTINGS).clearCookie('refreshToken', COOKIE_SETTINGS);
+        handleError(error, req, res, next, 'Refresh Token Expired');
       } else {
         handleError(error, req, res, next);
       }

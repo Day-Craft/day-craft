@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 export function handleNotFound(req: Request, res: Response, next: NextFunction) {
   res.status(404);
   const error = new Error(`🔍 - Not Found - ${req.originalUrl}`);
-  next(error);
+  handleError(error, req, res, next);
 }
 
 export function handleError(err: any, _req: Request, res: Response<ErrorResponseInterface>, next: NextFunction, message?: string) {
