@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { EMAIL_FROM, EMAIL_PASSWORD, EMAIL_USER } from "../constants";
 
 interface EmailPayload {
+    job_name: string;
     recipient: string;
     emailSubject: string;
     emailBody: string;
@@ -16,14 +17,18 @@ const emailTransporter = nodemailer.createTransport({
 });
 
 const sendEmail = async (payload: EmailPayload) => {
-    const { recipient, emailSubject, emailBody } = payload;
-    await emailTransporter.sendMail({
-        from: EMAIL_FROM,
-        to: recipient,
-        subject: emailSubject,
-        text: emailBody
-    });
-    console.log(`Email job ${payload}`);
+    try {
+        const { recipient, emailSubject, emailBody } = payload;
+        console.log(`Sending email to ${recipient}`);
+        await emailTransporter.sendMail({
+            from: EMAIL_FROM,
+            to: recipient,
+            subject: emailSubject,
+            text: emailBody
+        });
+        console.log(`Email job ${payload.job_name} sent to ${recipient}`);
+    } catch (error) {
+        console.error(`Failed to send email: ${error}`);
+    }
 }
-
 export default sendEmail;

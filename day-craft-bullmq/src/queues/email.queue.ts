@@ -8,6 +8,7 @@ const emailQueueWorker = new Worker(EMAIL_TASK_QUEUE, async (job) => {
 
     await sendEmail(
         {
+            job_name: job.name,
             recipient: job.data.payload.to,
             emailSubject: job.data.payload.subject,
             emailBody: job.data.payload.body
