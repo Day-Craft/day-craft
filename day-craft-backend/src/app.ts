@@ -1,14 +1,11 @@
-import express from 'express';
-import morganLogger from 'morgan';
-import helmetSecurity from 'helmet';
-import corsMiddleware from 'cors';
 import cookieParserMiddleware from 'cookie-parser';
+import corsMiddleware from 'cors';
+import express from 'express';
+import helmetSecurity from 'helmet';
+import morganLogger from 'morgan';
 
-import { handleError, handleNotFound } from './lib/middlewares';
 import generateResponse from './interfaces/MessageResponse';
-
-import dotenv from 'dotenv';
-dotenv.config();
+import { handleError, handleNotFound } from './lib/middlewares';
 
 const expressApp = express();
 expressApp.use(morganLogger('dev'));
@@ -18,12 +15,12 @@ expressApp.use(express.json());
 expressApp.use(cookieParserMiddleware());
 
 // Define root route
-expressApp.get('/', (req, res) => {
+expressApp.get('/', (_req, res) => {
   res.status(200).json(generateResponse(true, 'Hello Day Craft!', null, undefined));
 });
 
 // Define health check route
-expressApp.get('/health', (req, res) => {
+expressApp.get('/health', (_req, res) => {
   res.status(200).json(generateResponse(true, 'Server is running!', null, undefined));
 });
 
